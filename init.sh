@@ -7,4 +7,6 @@ else
   echo "Module $UTILITY already present in $PYTHONPATH"
 fi
 
+poetry update
+poetry install
 poetry run python3 "$1"
