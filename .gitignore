@@ -2,8 +2,6 @@
 .upm/*
 log.txt
 tmp.txt
-.replit
-replit.nix
 venv/*
 build/*
 dist/*
@@ -15,6 +13,5 @@ security/*.png
 /.idea/sonarlint/*
 setup_env.sh
 **/*.log
-
 **/flask_session/
 **/*.db
