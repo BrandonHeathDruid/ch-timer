@@ -6,6 +6,7 @@ from secrets import token_hex
 import bcrypt
 import requests
 
+from utils import get_current_time_minutes, TIMER_OFFSET
 from models import User
 
 _HOST = os.getenv('HOST')
@@ -79,8 +80,8 @@ class Api:
 
     @postgrest_sanitize
     def get_user_by_sessionid(self, sessionid) -> User | None:
-        exists = self.session.get(f'{self.url}/websession?sessionid=eq.{sessionid}&select=sessionid').json()
-        if exists:
+        exists = self.session.get(f'{self.url}/websession?sessionid=eq.{sessionid}&select=sessionid')
+        if exists.status_code == 200 and exists.json():
             data = self.session.get(
                 f'{self.url}/websession?sessionid=eq.{sessionid}&select=*,userprofile(name,serverid,clanid,role,webprofile(username,change_pw))').json()[
                 0]
@@ -106,3 +107,47 @@ class Api:
             data = data[0]
             return User(id=_id, sessionid=data['sessionid'], userprofileid=data['userprofile']['id'],
                         clanid=data['userprofile']['clanid'], role=data['userprofile']['role'])
+
+    @postgrest_sanitize
+    def session_used(self, sessionid):
+        res = self.session.patch(f'{self.url}/websession?sessionid=eq.{sessionid}',
+                                 json={'lastuse': datetime.utcnow().isoformat()})
+
+        return res.status_code == 204
+
+    @postgrest_sanitize
+    def get_timers_type_by_clanid(self, clanid):
+        types = self.session.get(f'{self.url}/timer?clanid=eq.{clanid}&select=type&order=type').json()
+        data = []
+        prev_type = ''
+        for t in types:
+            timer_type = t['type']
+            if timer_type != prev_type:
+                data.append(timer_type)
+                prev_type = timer_type
+
+        return data
+
+    @postgrest_sanitize
+    def get_timers_by_clanid_type(self, clanid, _type):
+        return self.session.get(
+            f'{self.url}/timer?clanid=eq.{clanid}&type=eq.{_type}&select=bossname,timer&order=bossname').json()
+
+    @postgrest_sanitize
+    def set_timer_by_clanid_bossname(self, clanid, bossname, timer):
+        res = self.session.patch(f'{self.url}/timer?clanid=eq.{clanid}&bossname=eq.{bossname}', json={'timer': timer})
+
+        return res.status_code == 204
+
+    @postgrest_sanitize
+    def reset_timer_by_clanid_bossname(self, clanid, bossname):
+        boss_data = self.session.get(
+            f'{self.url}/timer?clanid=eq.{clanid}&bossname=eq.{bossname}&select=respawntimeminutes').json()
+        if boss_data:
+            respawn_time_minutes = boss_data[0]['respawntimeminutes']
+            current_time_in_minutes = get_current_time_minutes()
+            timer = current_time_in_minutes + respawn_time_minutes - TIMER_OFFSET
+            res = self.set_timer_by_clanid_bossname(clanid, bossname, timer)
+
+            if res:
+                return {'timer': timer}

@@ -59,6 +59,7 @@ def login_req(role=0):
             user = check_logged()
             if user is not None:
                 logger.info(f'{fun.__name__}:{user}')
+                api.session_used(user.sessionid)
                 if user.role >= role:
                     return fun(user, *args, **kwargs)
 
@@ -139,6 +140,28 @@ def get_sessions(user: User):
 @login_req()
 def dashboard(user: User):
     return render_template('dashboard.html', user=user, role_name=ROLES[user.role], role_color=ROLES_COLORS[user.role])
+
+
+@app.get('/timers-type')
+@login_req()
+def get_timers_type(user: User):
+    return jsonify(api.get_timers_type_by_clanid(user.clanid))
+
+
+@app.get('/timers/<_type>')
+@login_req()
+def get_timers_by_type(user: User, _type):
+    return jsonify(api.get_timers_by_clanid_type(user.clanid, _type.upper()))
+
+
+@app.patch('/timer/reset/<bossname>')
+@login_req(role=1)
+def reset_timer_by_bossname(user: User, bossname):
+    res = api.reset_timer_by_clanid_bossname(user.clanid, bossname.lower())
+    if res:
+        return jsonify(res)
+
+    return jsonify(None), 404
 
 
 if __name__ == '__main__':
