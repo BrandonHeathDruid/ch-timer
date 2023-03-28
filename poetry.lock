@@ -321,18 +321,6 @@ optional = false
 python-versions = ">=3.6"
 
 [[package]]
-name = "pymysql"
-version = "1.0.2"
-description = "Pure Python MySQL Driver"
-category = "main"
-optional = false
-python-versions = ">=3.6"
-
-[package.extras]
-ed25519 = ["PyNaCl (>=1.4.0)"]
-rsa = ["cryptography"]
-
-[[package]]
 name = "python-dotenv"
 version = "1.0.0"
 description = "Read key-value pairs from a .env file and set them as environment variables"
@@ -560,7 +548,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.10.0,<3.11"
-content-hash = "04d9de1e4d30e8f9d19650904afd0235ce935762058cd00ff21bd28bd5697cb9"
+content-hash = "488249f0d2b7b371e8cb3d12edd91945f19ea1d47ff55724ac35fa4c6dc6908a"
 
 [metadata.files]
 aiohttp = []
@@ -593,7 +581,6 @@ paste = []
 platformdirs = []
 pluggy = []
 pyflakes = []
-pymysql = []
 python-dotenv = []
 python-lsp-jsonrpc = []
 pytoolconfig = []
