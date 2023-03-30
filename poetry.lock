@@ -219,7 +219,7 @@ i18n = ["Babel (>=2.7)"]
 
 [[package]]
 name = "logtail-python"
-version = "0.1.4"
+version = "0.2.3"
 description = "Logtail.com client library"
 category = "main"
 optional = false
