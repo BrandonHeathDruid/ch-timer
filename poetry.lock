@@ -126,7 +126,7 @@ python-versions = "*"
 
 [[package]]
 name = "debugpy"
-version = "1.6.6"
+version = "1.6.7"
 description = "An implementation of the Debug Adapter Protocol for Python"
 category = "dev"
 optional = false
@@ -255,7 +255,7 @@ python-versions = ">=3.7"
 
 [[package]]
 name = "packaging"
-version = "23.0"
+version = "23.1"
 description = "Core utilities for Python packages"
 category = "dev"
 optional = false
