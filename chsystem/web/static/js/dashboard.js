@@ -32,15 +32,15 @@ function timerResetConfirmed(bossname, tdTimer) {
         url: `./timer/reset/${bossname}`,
         type: 'PATCH',
         timeout: 5000,
-        success: function (data) {
+        success(data) {
             let minsNow = Math.trunc(new Date().getTime() / 1000 / 60)
             let remainingMins = data.timer - minsNow
             $(tdTimer).empty()
             $(tdTimer).text(minutesToDHM(remainingMins))
             setTdTimerBK(tdTimer, remainingMins)
         },
-        error: function (xhr, status, error) {
-            alert(`Error resetting ${bossname}`)
+        error() {
+            bootbox.alert(`Error resetting ${bossname}`)
         }
     })
 }
@@ -50,7 +50,7 @@ function loadTimers(_type) {
         url: `./timers/${_type}`,
         type: 'GET',
         timeout: 5000,
-        success: function (data) {
+        success(data) {
             let resetButtonTemplate = '<button type="button" class="fw-bold btn btn-outline-danger"><i class="bi bi-arrow-clockwise"></i></button>'
 
             let tbody = $(`#tbody${_type}`)
@@ -59,7 +59,7 @@ function loadTimers(_type) {
                 let tr = $('<tr>')[0]
                 let th = $(`<th scope="row">${timer.bossname}</th>`)[0]
                 let remainingMins = timer.timer - minsNow
-                let tdTimer = $(`<td>${timer.timer == null ? 'No Data' : minutesToDHM(remainingMins)}</td>`)[0]
+                let tdTimer = $(`<td>${timer.timer === null ? 'No Data' : minutesToDHM(remainingMins)}</td>`)[0]
                 let tdResetButton = $('<td>')[0]
                 let resetButton = $(resetButtonTemplate)[0]
 
@@ -76,7 +76,7 @@ function loadTimers(_type) {
                                 className: 'btn-secondary'
                             }
                         },
-                        callback: function (result) {
+                        callback(result) {
                             if (result) {
                                 $(tdTimer).empty()
                                 $(tdTimer).append($('<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>'))
@@ -87,7 +87,7 @@ function loadTimers(_type) {
                     })
                 })
 
-                if (timer.timer != null) {
+                if (timer.timer !== null) {
                     setTdTimerBK(tdTimer, remainingMins)
                 }
 
@@ -97,8 +97,8 @@ function loadTimers(_type) {
             })
             $(`#button${_type}`).children()[0].remove()
         },
-        error: function (xhr, status, error) {
-            alert(`Error getting ${_type} timers data`)
+        error() {
+            bootbox.alert(`Error getting ${_type} timers data`)
         }
     })
 }
@@ -108,7 +108,7 @@ function loadTimersType() {
         url: './timers-type',
         type: 'GET',
         timeout: 5000,
-        success: function (data) {
+        success(data) {
             let accordionBodyTemplate = '<div class="accordion-body row mx-auto table-responsive">'
             let tableTemplate = '<table class="table table-hover">'
             let tableThreadTemplate = '<thead><tr><th scope="col">Name</th><th scope="col">Timer</th><th scope="col">Reset</th></tr></thead>'
@@ -147,8 +147,8 @@ function loadTimersType() {
             })
             $('#timersCardLoading').remove()
         },
-        error: function (xhr, status, error) {
-            alert('Error getting timers type data')
+        error() {
+            bootbox.alert('Error getting timers type data')
         }
     })
 }
