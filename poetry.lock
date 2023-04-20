@@ -526,11 +526,14 @@ python-versions = ">=3.7"
 
 [[package]]
 name = "yapf"
-version = "0.32.0"
+version = "0.33.0"
 description = "A formatter for Python code."
 category = "dev"
 optional = false
 python-versions = "*"
+
+[package.dependencies]
+tomli = ">=2.0.1"
 
 [[package]]
 name = "yarl"
